@@ -1,0 +1,10 @@
+node_modules/
+runtime/
+.env
+.env.*
+!.env.example
+*.sqlite
+*.sqlite-*
+*.key
+*.log
+work-log-*.txt

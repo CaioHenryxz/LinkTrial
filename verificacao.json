@@ -1,0 +1,11 @@
+{
+  "verifiedAt": "2026-10-31",
+  "api": "ClinicalTrials.gov v2",
+  "studiesQueried": 359,
+  "syncFailures": 0,
+  "discoveryDefault": "ClinicalTrials.gov only",
+  "cardLocations": "up to 2 Brazilian facilities and cities, plus remaining site count",
+  "example": { "id": "NCT06119581", "site": "Fundação Pio XII - Hospital de Câncer de Barretos", "city": "Barretos" },
+  "onlySyntheticPatientData": true,
+  "productionReady": false
+}
