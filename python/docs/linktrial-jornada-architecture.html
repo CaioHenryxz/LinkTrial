@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkTrial — Jornada do paciente e arquitetura</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'JetBrains Mono', monospace; background: #020617; min-height: 100vh; padding: 2rem; color: white; }
+    .container { max-width: 1400px; margin: 0 auto; }
+    .header { margin-bottom: 1.5rem; }
+    .header-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; }
+    .pulse-dot { width: 12px; height: 12px; background: #22d3ee; border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.025em; }
+    h1 b { color: #fb7185; }
+    .subtitle { color: #94a3b8; font-size: 0.875rem; margin-left: 1.75rem; }
+    .diagram-container { background: rgba(15, 23, 42, 0.5); border-radius: 1rem; border: 1px solid #1e293b; padding: 1.5rem; overflow-x: auto; }
+    svg { width: 100%; min-width: 1100px; display: block; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-top: 2rem; }
+    .card { background: rgba(15, 23, 42, 0.5); border-radius: 0.75rem; border: 1px solid #1e293b; padding: 1.25rem; }
+    .card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .card-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .card-dot.cyan { background: #22d3ee; } .card-dot.emerald { background: #34d399; }
+    .card-dot.violet { background: #a78bfa; } .card-dot.amber { background: #fbbf24; } .card-dot.rose { background: #fb7185; }
+    .card h3 { font-size: 0.875rem; font-weight: 600; }
+    .card ul { list-style: none; color: #94a3b8; font-size: 0.75rem; }
+    .card li { margin-bottom: 0.375rem; }
+    .footer { text-align: center; margin-top: 1.5rem; color: #475569; font-size: 0.75rem; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-row"><div class="pulse-dot"></div><h1>Link<b>Trial</b> — jornada do paciente → match com estudo clínico</h1></div>
+    <p class="subtitle">Paciente → consulta → dados → LinkTrial → verificação critério a critério → encaminhamento. O paciente nunca paga.</p>
+  </div>
+
+  <div class="diagram-container">
+    <svg viewBox="0 0 1400 800">
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#64748b" />
+        </marker>
+        <marker id="arrow-cyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee" />
+        </marker>
+        <marker id="arrow-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#fb923c" />
+        </marker>
+        <marker id="arrow-emerald" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#34d399" />
+        </marker>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#grid)" />
+
+      <!-- ============ BOUNDARIES ============ -->
+      <rect x="30" y="170" width="1340" height="430" rx="12" fill="rgba(251, 191, 36, 0.04)" stroke="#fbbf24" stroke-width="1" stroke-dasharray="8,4"/>
+      <text x="175" y="188" fill="#fbbf24" font-size="10" font-weight="600">Plataforma LinkTrial — hospedagem no Brasil</text>
+      <rect x="50" y="200" width="870" height="380" rx="8" fill="transparent" stroke="#fb7185" stroke-width="1" stroke-dasharray="4,4"/>
+      <text x="175" y="216" fill="#fb7185" font-size="9">Zona de dado pessoal sensível (LGPD art. 11) — só dado pseudonimizado sai daqui</text>
+
+      <!-- ============ ARROWS (drawn first, behind boxes) ============ -->
+      <!-- jornada -->
+      <line x1="170" y1="95" x2="218" y2="95" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+      <line x1="370" y1="95" x2="418" y2="95" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+      <line x1="590" y1="95" x2="638" y2="95" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+      <text x="614" y="88" fill="#94a3b8" font-size="8" text-anchor="middle">médico</text>
+      <!-- cadastro -> consentimento -->
+      <path d="M 725 125 L 725 150 Q 725 160 715 160 L 165 160 Q 155 160 155 170 L 155 238" fill="none" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+      <!-- row B -->
+      <line x1="240" y1="270" x2="278" y2="270" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+      <line x1="450" y1="270" x2="488" y2="270" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+      <!-- perfil -> pré-filtro -->
+      <path d="M 575 305 L 575 325 L 120 325 L 120 388" fill="none" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+      <text x="350" y="320" fill="#94a3b8" font-size="8" text-anchor="middle">perfil pseudonimizado (mCODE)</text>
+      <!-- banco -> pré-filtro -->
+      <path d="M 1040 305 L 1040 350 L 200 350 L 200 388" fill="none" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+      <text x="960" y="345" fill="#94a3b8" font-size="8" text-anchor="middle">só estudos ativos</text>
+      <!-- row C -->
+      <line x1="240" y1="425" x2="278" y2="425" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+      <line x1="450" y1="425" x2="488" y2="425" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+      <line x1="660" y1="425" x2="698" y2="425" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+      <text x="469" y="418" fill="#94a3b8" font-size="7" text-anchor="middle">top-K</text>
+      <!-- jev -> decisão (consenso) -->
+      <path d="M 365 460 L 365 485 Q 365 495 375 495 L 790 495 Q 800 495 800 485 L 800 462" fill="none" stroke="#fbbf24" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arrowhead)"/>
+      <text x="580" y="508" fill="#fbbf24" font-size="8" text-anchor="middle">2ª opinião calibrada: bloqueio só com consenso LLM × Jev</text>
+      <!-- decisão -> auditoria -->
+      <line x1="760" y1="460" x2="760" y2="528" stroke="#fb7185" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrowhead)"/>
+      <!-- API -> sync -> banco -->
+      <line x1="1260" y1="125" x2="1260" y2="238" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+      <text x="1252" y="200" fill="#94a3b8" font-size="8" text-anchor="end">API v2 · snapshot diário</text>
+      <line x1="1170" y1="270" x2="1132" y2="270" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+      <!-- decisão -> relatório -->
+      <path d="M 860 460 L 860 600 L 790 600 L 790 638" fill="none" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+      <!-- saída -->
+      <line x1="880" y1="670" x2="908" y2="670" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+      <line x1="1080" y1="670" x2="1108" y2="670" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+      <line x1="1250" y1="670" x2="1268" y2="670" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrow-emerald)"/>
+      <!-- valor: indústria -> centro / plataforma -->
+      <line x1="1180" y1="500" x2="1180" y2="638" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arrow-orange)"/>
+      <text x="1188" y="570" fill="#fb923c" font-size="8">orçamento do estudo</text>
+      <text x="1188" y="581" fill="#fb923c" font-size="8">(aprovado pelo CEP)</text>
+      <path d="M 1110 455 L 1060 455 L 1060 410" fill="none" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arrow-orange)"/>
+      <!-- ============ JORNADA (linha superior) ============ -->
+      <rect x="40" y="65" width="130" height="60" rx="6" fill="#0f172a"/>
+      <rect x="40" y="65" width="130" height="60" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+      <text x="105" y="90" fill="white" font-size="12" font-weight="600" text-anchor="middle">1 · Paciente</text>
+      <text x="105" y="107" fill="#94a3b8" font-size="9" text-anchor="middle">SUS ou suplementar</text>
+
+      <rect x="220" y="65" width="150" height="60" rx="6" fill="#0f172a"/>
+      <rect x="220" y="65" width="150" height="60" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+      <text x="295" y="90" fill="white" font-size="12" font-weight="600" text-anchor="middle">2 · Consulta</text>
+      <text x="295" y="107" fill="#94a3b8" font-size="9" text-anchor="middle">oncologista</text>
+
+      <rect x="420" y="65" width="170" height="60" rx="6" fill="#0f172a"/>
+      <rect x="420" y="65" width="170" height="60" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+      <text x="505" y="88" fill="white" font-size="12" font-weight="600" text-anchor="middle">3 · Dados clínicos</text>
+      <text x="505" y="103" fill="#94a3b8" font-size="8" text-anchor="middle">diagnóstico · TNM · ECOG</text>
+      <text x="505" y="115" fill="#94a3b8" font-size="8" text-anchor="middle">AP/IHQ · NGS · exames</text>
+
+      <rect x="640" y="65" width="170" height="60" rx="6" fill="#0f172a"/>
+      <rect x="640" y="65" width="170" height="60" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+      <text x="725" y="88" fill="white" font-size="12" font-weight="600" text-anchor="middle">4 · Cadastro LinkTrial</text>
+      <text x="725" y="103" fill="#94a3b8" font-size="8" text-anchor="middle">formulário mCODE</text>
+      <text x="725" y="115" fill="#94a3b8" font-size="8" text-anchor="middle">(ou NLP do prontuário)</text>
+
+      <rect x="1170" y="65" width="180" height="60" rx="6" fill="#0f172a"/>
+      <rect x="1170" y="65" width="180" height="60" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+      <text x="1260" y="90" fill="white" font-size="12" font-weight="600" text-anchor="middle">ClinicalTrials.gov</text>
+      <text x="1260" y="107" fill="#94a3b8" font-size="9" text-anchor="middle">registro público de estudos</text>
+
+      <!-- ============ LINHA B: dado do paciente ============ -->
+      <rect x="70" y="240" width="170" height="65" rx="6" fill="#0f172a"/>
+      <rect x="70" y="240" width="170" height="65" rx="6" fill="rgba(136, 19, 55, 0.4)" stroke="#fb7185" stroke-width="1.5"/>
+      <text x="155" y="263" fill="white" font-size="11" font-weight="600" text-anchor="middle">Consentimento +</text>
+      <text x="155" y="277" fill="white" font-size="11" font-weight="600" text-anchor="middle">pseudonimização</text>
+      <text x="155" y="294" fill="#94a3b8" font-size="8" text-anchor="middle">nome/CPF → ID · minimização</text>
+
+      <rect x="280" y="240" width="170" height="65" rx="6" fill="#0f172a"/>
+      <rect x="280" y="240" width="170" height="65" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+      <text x="365" y="265" fill="white" font-size="11" font-weight="600" text-anchor="middle">Estruturação mCODE</text>
+      <text x="365" y="281" fill="#94a3b8" font-size="8" text-anchor="middle">FHIR R4 · STU4</text>
+      <text x="365" y="294" fill="#94a3b8" font-size="8" text-anchor="middle">ECOG · TNM · biomarcadores</text>
+
+      <rect x="490" y="240" width="170" height="65" rx="6" fill="#0f172a"/>
+      <rect x="490" y="240" width="170" height="65" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+      <text x="575" y="265" fill="white" font-size="11" font-weight="600" text-anchor="middle">Perfil do paciente</text>
+      <text x="575" y="281" fill="#94a3b8" font-size="8" text-anchor="middle">pseudonimizado</text>
+      <text x="575" y="294" fill="#94a3b8" font-size="8" text-anchor="middle">"Campo: valor" auditável</text>
+
+      <!-- ============ LINHA C: motor de match ============ -->
+      <rect x="70" y="390" width="170" height="70" rx="6" fill="#0f172a"/>
+      <rect x="70" y="390" width="170" height="70" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+      <text x="155" y="413" fill="white" font-size="11" font-weight="600" text-anchor="middle">① Pré-filtro</text>
+      <text x="155" y="429" fill="#94a3b8" font-size="8" text-anchor="middle">regras: tumor · idade · sexo</text>
+      <text x="155" y="441" fill="#94a3b8" font-size="8" text-anchor="middle">ECOG · UF</text>
+      <text x="155" y="453" fill="#34d399" font-size="7" text-anchor="middle">359 → ~40 candidatos</text>
+
+      <rect x="280" y="390" width="170" height="70" rx="6" fill="#0f172a"/>
+      <rect x="280" y="390" width="170" height="70" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+      <text x="365" y="413" fill="white" font-size="11" font-weight="600" text-anchor="middle">② Jev (TypeSafe)</text>
+      <text x="365" y="429" fill="#94a3b8" font-size="8" text-anchor="middle">decision model · System One</text>
+      <text x="365" y="441" fill="#94a3b8" font-size="8" text-anchor="middle">probabilidade por critério</text>
+      <text x="365" y="453" fill="#fbbf24" font-size="7" text-anchor="middle">~0,5 s/estudo · ranking</text>
+
+      <rect x="490" y="390" width="170" height="70" rx="6" fill="#0f172a"/>
+      <rect x="490" y="390" width="170" height="70" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+      <text x="575" y="413" fill="white" font-size="11" font-weight="600" text-anchor="middle">③ LLM revisão</text>
+      <text x="575" y="429" fill="#94a3b8" font-size="8" text-anchor="middle">critério a critério</text>
+      <text x="575" y="441" fill="#94a3b8" font-size="8" text-anchor="middle">evidência literal · coortes</text>
+      <text x="575" y="453" fill="#fbbf24" font-size="7" text-anchor="middle">evidência inventada → descartada</text>
+
+      <rect x="700" y="390" width="200" height="70" rx="6" fill="#0f172a"/>
+      <rect x="700" y="390" width="200" height="70" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+      <text x="800" y="413" fill="white" font-size="11" font-weight="600" text-anchor="middle">④ Camada de decisão</text>
+      <text x="800" y="429" fill="#94a3b8" font-size="8" text-anchor="middle">regras determinísticas</text>
+      <text x="800" y="441" fill="#94a3b8" font-size="8" text-anchor="middle">🟢 provável · 🟡 possível</text>
+      <text x="800" y="453" fill="#94a3b8" font-size="8" text-anchor="middle">🟠 revisão · 🔴 inelegível</text>
+
+      <rect x="670" y="530" width="180" height="45" rx="6" fill="#0f172a"/>
+      <rect x="670" y="530" width="180" height="45" rx="6" fill="rgba(136, 19, 55, 0.4)" stroke="#fb7185" stroke-width="1.5"/>
+      <text x="760" y="549" fill="white" font-size="10" font-weight="600" text-anchor="middle">Trilha de auditoria</text>
+      <text x="760" y="564" fill="#94a3b8" font-size="8" text-anchor="middle">critério · evidência · modelo</text>
+
+      <!-- ============ DADOS DE ESTUDOS ============ -->
+      <rect x="950" y="240" width="180" height="65" rx="6" fill="#0f172a"/>
+      <rect x="950" y="240" width="180" height="65" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+      <text x="1040" y="263" fill="white" font-size="11" font-weight="600" text-anchor="middle">Banco de estudos</text>
+      <text x="1040" y="279" fill="#94a3b8" font-size="8" text-anchor="middle">359 oncológicos ativos no BR</text>
+      <text x="1040" y="292" fill="#94a3b8" font-size="8" text-anchor="middle">critérios estruturados</text>
+
+      <rect x="1170" y="240" width="180" height="65" rx="6" fill="#0f172a"/>
+      <rect x="1170" y="240" width="180" height="65" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+      <text x="1260" y="263" fill="white" font-size="11" font-weight="600" text-anchor="middle">Sync diário (CRUD)</text>
+      <text x="1260" y="279" fill="#94a3b8" font-size="8" text-anchor="middle">novo · atualizado · encerrado</text>
+      <text x="1260" y="292" fill="#94a3b8" font-size="8" text-anchor="middle">soft delete · trava de segurança</text>
+
+      <rect x="950" y="380" width="160" height="35" rx="6" fill="#0f172a"/>
+      <rect x="950" y="380" width="160" height="35" rx="6" fill="rgba(251, 146, 60, 0.15)" stroke="#fb923c" stroke-width="1.2"/>
+      <text x="1030" y="401" fill="#fb923c" font-size="9" font-weight="600" text-anchor="middle">receita da plataforma</text>
+
+      <rect x="1110" y="420" width="240" height="80" rx="6" fill="#0f172a"/>
+      <rect x="1110" y="420" width="240" height="80" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+      <text x="1230" y="443" fill="white" font-size="11" font-weight="600" text-anchor="middle">Indústria / CRO</text>
+      <text x="1230" y="460" fill="#94a3b8" font-size="8" text-anchor="middle">paga por SERVIÇO: feasibility,</text>
+      <text x="1230" y="472" fill="#94a3b8" font-size="8" text-anchor="middle">pré-triagem, aceleração do recrutamento</text>
+      <text x="1230" y="488" fill="#fb923c" font-size="8" text-anchor="middle">nunca compra dado do paciente</text>
+
+      <!-- ============ SAÍDA (linha inferior) ============ -->
+      <rect x="700" y="640" width="180" height="60" rx="6" fill="#0f172a"/>
+      <rect x="700" y="640" width="180" height="60" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+      <text x="790" y="663" fill="white" font-size="11" font-weight="600" text-anchor="middle">5 · Relatório</text>
+      <text x="790" y="678" fill="#94a3b8" font-size="8" text-anchor="middle">estudos ranqueados +</text>
+      <text x="790" y="690" fill="#94a3b8" font-size="8" text-anchor="middle">checklist de pendências</text>
+
+      <rect x="910" y="640" width="170" height="60" rx="6" fill="#0f172a"/>
+      <rect x="910" y="640" width="170" height="60" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+      <text x="995" y="663" fill="white" font-size="11" font-weight="600" text-anchor="middle">6 · Médico decide</text>
+      <text x="995" y="678" fill="#94a3b8" font-size="8" text-anchor="middle">conversa com o paciente</text>
+      <text x="995" y="690" fill="#94a3b8" font-size="8" text-anchor="middle">decisão sempre humana</text>
+
+      <rect x="1110" y="640" width="140" height="60" rx="6" fill="#0f172a"/>
+      <rect x="1110" y="640" width="140" height="60" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+      <text x="1180" y="663" fill="white" font-size="11" font-weight="600" text-anchor="middle">7 · Centro</text>
+      <text x="1180" y="678" fill="#94a3b8" font-size="8" text-anchor="middle">coordenador · TCLE</text>
+      <text x="1180" y="690" fill="#94a3b8" font-size="8" text-anchor="middle">triagem oficial</text>
+
+      <rect x="1270" y="640" width="120" height="60" rx="6" fill="#0f172a"/>
+      <rect x="1270" y="640" width="120" height="60" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+      <text x="1330" y="663" fill="white" font-size="11" font-weight="600" text-anchor="middle">8 · Paciente</text>
+      <text x="1330" y="678" fill="#34d399" font-size="8" text-anchor="middle">acesso a terapia</text>
+      <text x="1330" y="690" fill="#34d399" font-size="8" text-anchor="middle">sem custo</text>
+
+      <!-- ============ LEGENDA (abaixo de todas as boundaries) ============ -->
+      <text x="40" y="735" fill="white" font-size="10" font-weight="600">Legenda</text>
+      <rect x="40" y="748" width="16" height="10" rx="2" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1"/>
+      <text x="62" y="757" fill="#94a3b8" font-size="8">Interface / jornada</text>
+      <rect x="180" y="748" width="16" height="10" rx="2" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1"/>
+      <text x="202" y="757" fill="#94a3b8" font-size="8">Processamento (código)</text>
+      <rect x="340" y="748" width="16" height="10" rx="2" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1"/>
+      <text x="362" y="757" fill="#94a3b8" font-size="8">Modelos de IA</text>
+      <rect x="460" y="748" width="16" height="10" rx="2" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1"/>
+      <text x="482" y="757" fill="#94a3b8" font-size="8">Dados</text>
+      <rect x="540" y="748" width="16" height="10" rx="2" fill="rgba(136, 19, 55, 0.4)" stroke="#fb7185" stroke-width="1"/>
+      <text x="562" y="757" fill="#94a3b8" font-size="8">LGPD / segurança</text>
+      <rect x="670" y="748" width="16" height="10" rx="2" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1"/>
+      <text x="692" y="757" fill="#94a3b8" font-size="8">Externo</text>
+      <line x1="760" y1="753" x2="780" y2="753" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="786" y="757" fill="#94a3b8" font-size="8">Fluxo de valor (R$)</text>
+      <line x1="900" y1="753" x2="920" y2="753" stroke="#fbbf24" stroke-width="1.2" stroke-dasharray="5,4"/>
+      <text x="926" y="757" fill="#94a3b8" font-size="8">Consenso entre modelos</text>
+      <rect x="1060" y="748" width="16" height="10" rx="2" fill="transparent" stroke="#fb7185" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="1082" y="757" fill="#94a3b8" font-size="8">Zona de dado sensível</text>
+      <rect x="1200" y="748" width="16" height="10" rx="2" fill="transparent" stroke="#fbbf24" stroke-width="1" stroke-dasharray="4,2"/>
+      <text x="1222" y="757" fill="#94a3b8" font-size="8">Plataforma (BR)</text>
+    </svg>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-header"><div class="card-dot cyan"></div><h3>Jornada (8 passos)</h3></div>
+      <ul>
+        <li>• 1–3 Paciente em consulta; o médico reúne diagnóstico, TNM, ECOG, AP/IHQ, NGS e exames</li>
+        <li>• 4 Cadastro em formulário mCODE (futuro: NLP do prontuário) com consentimento</li>
+        <li>• 5 Relatório: estudos ranqueados, critérios atendidos com evidência e checklist do que falta</li>
+        <li>• 6–8 Médico decide e encaminha; triagem oficial e TCLE no centro; paciente acessa a terapia sem custo</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-dot amber"></div><h3>Motor de match</h3></div>
+      <ul>
+        <li>• ① Regras eliminam o impossível (tumor, idade, sexo, ECOG)</li>
+        <li>• ② Jev (TypeSafe): probabilidade calibrada por critério em ~0,5 s → ranking de todos os candidatos</li>
+        <li>• ③ LLM revisa o top-K com evidência literal; evidência inventada é descartada; coortes = lógica OU</li>
+        <li>• ④ Regras decidem; bloqueio só com consenso LLM × Jev, senão vira pendência humana</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-dot rose"></div><h3>LGPD e fluxo de valor</h3></div>
+      <ul>
+        <li>• Dado de saúde = dado sensível: consentimento, minimização, pseudonimização antes da IA</li>
+        <li>• Hospedagem no Brasil; transferência internacional só com cláusulas-padrão ANPD</li>
+        <li>• Indústria paga por serviço (feasibility/pré-triagem), nunca por dado nem por "paciente entregue"</li>
+        <li>• Paciente nunca paga; médico ganha ferramenta, dado estruturado e retorno do caso</li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer">LinkTrial · MIT Hacking Medicine – Einstein · fonte de estudos: ClinicalTrials.gov API v2 · pré-triagem, elegibilidade final é do investigador</p>
+</div>
+</body>
+</html>

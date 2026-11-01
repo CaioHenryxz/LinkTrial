@@ -1,0 +1,37 @@
+{
+ "id": "SYN-001",
+ "_aviso": "PACIENTE SINTÉTICO - dados fictícios para demonstração",
+ "age": 62,
+ "sex": "MALE",
+ "uf": "SP",
+ "tumor_group": "Pulmão",
+ "diagnosis": "Adenocarcinoma de pulmão estádio IVB (metástases ósseas e adrenal), diagnosticado em 09/2026",
+ "ecog": 1,
+ "settings": [
+  "metastatic",
+  "first_line"
+ ],
+ "biomarkers": {
+  "KRAS": "G12C mutado (NGS tecidual)",
+  "EGFR": "selvagem",
+  "ALK": "negativo",
+  "ROS1": "negativo",
+  "PD-L1": "TPS 60% (22C3)"
+ },
+ "clinical": {
+  "Metástases cerebrais": "ausentes (RM de crânio 10/2026)",
+  "Doença mensurável (RECIST 1.1)": "sim, lesão pulmonar de 4,1 cm",
+  "Doença autoimune": "nega",
+  "Hepatite B/C e HIV": "sorologias negativas"
+ },
+ "labs": {
+  "Hemoglobina": "12,8 g/dL",
+  "Neutrófilos": "4.200/mm3",
+  "Plaquetas": "245.000/mm3",
+  "Creatinina": "0,9 mg/dL (ClCr 88 mL/min)",
+  "Bilirrubina total": "0,6 mg/dL",
+  "TGO/TGP": "28/31 U/L"
+ },
+ "prior_therapies": [],
+ "notes": "Tabagista 40 maços-ano, cessou em 2025. Sem tratamento sistêmico prévio para doença avançada."
+}

@@ -1,0 +1,4 @@
+# LinkTrial daily sync (Linux/VPS). Install: crontab -e and paste the line below (adjust path).
+# Runs 06:00 America/Sao_Paulo; output appended to data/cron.log; exit 2 = aborted by safety guard.
+CRON_TZ=America/Sao_Paulo
+0 6 * * * cd /opt/linktrial && PYTHONIOENCODING=utf-8 /usr/bin/python3 scripts/sync.py >> data/cron.log 2>&1
