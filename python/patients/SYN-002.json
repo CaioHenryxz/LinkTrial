@@ -1,0 +1,38 @@
+{
+ "id": "SYN-002",
+ "_aviso": "PACIENTE SINTÉTICO - dados fictícios para demonstração",
+ "age": 54,
+ "sex": "FEMALE",
+ "uf": "RS",
+ "tumor_group": "Mama",
+ "diagnosis": "Carcinoma ductal invasivo de mama RH+ HER2- metastático (fígado e ossos)",
+ "ecog": 1,
+ "settings": [
+  "metastatic",
+  "previously_treated"
+ ],
+ "biomarkers": {
+  "Receptor de estrogênio": "positivo 95%",
+  "Receptor de progesterona": "positivo 40%",
+  "HER2": "negativo (IHQ 1+)",
+  "PIK3CA": "não detectado",
+  "ESR1": "mutação Y537S detectada (biópsia líquida)",
+  "BRCA1/2": "germinativo negativo"
+ },
+ "clinical": {
+  "Metástases cerebrais": "ausentes",
+  "Doença mensurável (RECIST 1.1)": "sim, lesões hepáticas",
+  "Status menopausal": "pós-menopausa"
+ },
+ "labs": {
+  "Neutrófilos": "2.900/mm3",
+  "Plaquetas": "198.000/mm3",
+  "Creatinina": "0,8 mg/dL",
+  "Bilirrubina total": "0,9 mg/dL",
+  "TGO/TGP": "45/52 U/L"
+ },
+ "prior_therapies": [
+  "Ribociclibe + letrozol em 1ª linha metastática, progressão após 14 meses (09/2026)"
+ ],
+ "notes": "Sem quimioterapia prévia para doença metastática. Fez quimioterapia adjuvante (AC-T) em 2019."
+}

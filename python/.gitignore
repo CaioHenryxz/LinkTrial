@@ -1,0 +1,10 @@
+data/raw_studies.json
+data/linktrial.db
+data/*.novo.csv
+reports/
+__pycache__/
+*.pyc
+brag-output/work/*
+!brag-output/work/director.js
+!brag-output/work/audio.py
+!brag-output/work/render.py

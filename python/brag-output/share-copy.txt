@@ -1,0 +1,1 @@
+359 oncology trials are open in Brazil. LinkTrial pre-screens a pseudonymized patient against all of them, shows criterion by criterion why a trial fits (every inclusion met, no exclusion present) or the exact criterion that rules it out, and points the doctor to the recruiting hospital in the patient's own state. Pre-screening only: the study team confirms eligibility.
